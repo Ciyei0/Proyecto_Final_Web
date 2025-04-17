@@ -1,80 +1,129 @@
--- Crear base de datos
-CREATE DATABASE trabajo_rd CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE trabajo_rd;
+-- Creación de la base de datos
+CREATE DATABASE IF NOT EXISTS plataforma_empleos CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- Tabla de Usuarios
+USE plataforma_empleos;
+
+-- Tabla de usuarios (para ambos roles)
 CREATE TABLE usuarios (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    contraseña VARCHAR(255) NOT NULL,
-    rol ENUM('candidato', 'empresa') NOT NULL,
-    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    tipo ENUM('candidato', 'empresa') NOT NULL,
+    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    activo BOOLEAN DEFAULT TRUE
+);
 
--- Tabla de Candidatos (CV Digital)
+-- Tabla de candidatos (extiende usuarios)
 CREATE TABLE candidatos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    usuario_id INT NOT NULL,
-    nombres VARCHAR(100) NOT NULL,
-    apellidos VARCHAR(100) NOT NULL,
+    usuario_id INT PRIMARY KEY,
     telefono VARCHAR(20),
-    direccion TEXT,
+    direccion VARCHAR(200),
     ciudad VARCHAR(100),
     provincia VARCHAR(100),
-    formacion_academica JSON,  # {titulo: "", institucion: "", fecha: ""}
-    experiencia_laboral JSON,   # {puesto: "", empresa: "", fecha: ""}
-    habilidades TEXT,
-    idiomas VARCHAR(255),
-    objetivo_profesional TEXT,
-    logros TEXT,
-    disponibilidad ENUM('inmediata', '15_dias', '1_mes'),
-    linkedin VARCHAR(255),
-    referencias TEXT,
-    foto VARCHAR(255),
-    cv_pdf VARCHAR(255),
+    foto_perfil VARCHAR(255),
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
+);
 
--- Tabla de Empresas
+-- Tabla de empresas (extiende usuarios)
 CREATE TABLE empresas (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    usuario_id INT NOT NULL,
-    nombre_empresa VARCHAR(255) NOT NULL,
-    direccion TEXT,
-    telefono VARCHAR(20),
-    sitio_web VARCHAR(255),
+    usuario_id INT PRIMARY KEY,
+    nombre_empresa VARCHAR(100) NOT NULL,
     descripcion TEXT,
+    direccion VARCHAR(200),
+    telefono VARCHAR(20),
+    sitio_web VARCHAR(100),
     logo VARCHAR(255),
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
+);
 
--- Tabla de Ofertas de Empleo
-CREATE TABLE ofertas (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+-- Tabla de CVs
+CREATE TABLE cvs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    candidato_id INT NOT NULL,
+    objetivo_profesional TEXT,
+    habilidades_clave TEXT,
+    disponibilidad VARCHAR(50),
+    linkedin VARCHAR(100),
+    github VARCHAR(100),
+    otras_redes TEXT,
+    referencias TEXT,
+    cv_pdf VARCHAR(255),
+    fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (candidato_id) REFERENCES candidatos(usuario_id) ON DELETE CASCADE
+);
+
+-- Tabla de formación académica
+CREATE TABLE formacion_academica (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cv_id INT NOT NULL,
+    institucion VARCHAR(100) NOT NULL,
+    titulo VARCHAR(100) NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE,
+    descripcion TEXT,
+    FOREIGN KEY (cv_id) REFERENCES cvs(id) ON DELETE CASCADE
+);
+
+-- Tabla de experiencia laboral
+CREATE TABLE experiencia_laboral (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cv_id INT NOT NULL,
+    empresa VARCHAR(100) NOT NULL,
+    puesto VARCHAR(100) NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE,
+    descripcion TEXT,
+    FOREIGN KEY (cv_id) REFERENCES cvs(id) ON DELETE CASCADE
+);
+
+-- Tabla de idiomas
+CREATE TABLE idiomas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cv_id INT NOT NULL,
+    idioma VARCHAR(50) NOT NULL,
+    nivel VARCHAR(50) NOT NULL,
+    FOREIGN KEY (cv_id) REFERENCES cvs(id) ON DELETE CASCADE
+);
+
+-- Tabla de proyectos/logros
+CREATE TABLE proyectos_logros (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cv_id INT NOT NULL,
+    titulo VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    fecha DATE,
+    enlace VARCHAR(255),
+    FOREIGN KEY (cv_id) REFERENCES cvs(id) ON DELETE CASCADE
+);
+
+-- Tabla de ofertas de empleo
+CREATE TABLE ofertas_empleo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     empresa_id INT NOT NULL,
-    titulo VARCHAR(255) NOT NULL,
+    titulo VARCHAR(100) NOT NULL,
     descripcion TEXT NOT NULL,
     requisitos TEXT NOT NULL,
-    tipo_empleo ENUM('tiempo_completo', 'medio_tiempo', 'freelance', 'practicas'),
-    experiencia ENUM('sin_experiencia', '1_3_anios', '3_5_anios', '5_anios'),
-    salario DECIMAL(10,2),
+    ubicacion VARCHAR(100),
+    salario VARCHAR(50),
+    tipo_contrato VARCHAR(50),
     fecha_publicacion DATETIME DEFAULT CURRENT_TIMESTAMP,
     fecha_cierre DATE,
-    FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
+    activa BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (empresa_id) REFERENCES empresas(usuario_id) ON DELETE CASCADE
+);
 
--- Tabla de Postulaciones
-CREATE TABLE postulaciones (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+-- Tabla de aplicaciones a ofertas
+CREATE TABLE aplicaciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     oferta_id INT NOT NULL,
     candidato_id INT NOT NULL,
-    fecha_postulacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    estado ENUM('pendiente', 'revisado', 'aceptado', 'rechazado'),
+    cv_id INT NOT NULL,
+    fecha_aplicacion DATETIME DEFAULT CURRENT_TIMESTAMP,
     mensaje TEXT,
-    FOREIGN KEY (oferta_id) REFERENCES ofertas(id) ON DELETE CASCADE,
-    FOREIGN KEY (candidato_id) REFERENCES candidatos(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
-
--- Índices para optimización
-CREATE INDEX idx_ofertas_titulo ON ofertas(titulo);
-CREATE INDEX idx_empresas_nombre ON empresas(nombre_empresa);
+    estado ENUM('pendiente', 'revisado', 'seleccionado', 'rechazado') DEFAULT 'pendiente',
+    FOREIGN KEY (oferta_id) REFERENCES ofertas_empleo(id) ON DELETE CASCADE,
+    FOREIGN KEY (candidato_id) REFERENCES candidatos(usuario_id) ON DELETE CASCADE,
+    FOREIGN KEY (cv_id) REFERENCES cvs(id) ON DELETE CASCADE,
+    UNIQUE KEY (oferta_id, candidato_id) -- Evitar aplicaciones duplicadas
+);
