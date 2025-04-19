@@ -18,7 +18,7 @@ try {
 
 // Configuración del sitio
 define('SITE_NAME', 'Plataforma de Empleos');
-define('BASE_URL', 'http://localhost/Proyecto_Final_Web/index.php'); // Cambia esto según tu configuración local
+define('BASE_URL', 'http://localhost/Proyecto_Final_Web');
 define('UPLOAD_DIR', __DIR__ . '/../assets/uploads/');
 define('CV_DIR', __DIR__ . '/../assets/cv/');
 define('PHOTOS_DIR', __DIR__ . '/../assets/uploads/photos/');
