@@ -2,7 +2,7 @@
 session_start();
 
 // Configuración de la base de datos
-define('DB_HOST', 'localhost:3307');// Cambia el puerto si es necesario
+define('DB_HOST', 'localhost');// Cambia el puerto si es necesario
 define('DB_NAME', 'plataforma_empleos');
 define('DB_USER', 'root');
 define('DB_PASS', '');

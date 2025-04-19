@@ -3,7 +3,6 @@ require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/auth_functions.php';
 
 $pageTitle = "Iniciar Sesión";
-require_once __DIR__ . '/../includes/header.php';
 
 $error = '';
 
@@ -18,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Email o contraseña incorrectos";
     }
 }
+require_once __DIR__ . '/../includes/header.php';
+
 ?>
 
 <div class="row justify-content-center align-items-center vh-100">
