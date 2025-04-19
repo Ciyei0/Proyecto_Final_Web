@@ -60,17 +60,17 @@ $offers = $stmt->fetchAll();
                                     <div class="d-flex gap-2">
                                         <a href="postulantes.php?oferta_id=<?php echo $offer['id']; ?>" 
                                            class="btn btn-sm btn-outline-primary" title="Ver postulantes">
-                                            <i class="fas fa-users"></i>
+                                            <i class="bi bi-eye-fill"></i></i>
                                         </a>
                                         <a href="editar_oferta.php?id=<?php echo $offer['id']; ?>" 
                                            class="btn btn-sm btn-outline-secondary" title="Editar">
-                                            <i class="fas fa-edit"></i>
+                                            <i class="bi bi-pencil-square"></i>
                                         </a>
                                         <form method="post" action="eliminar_oferta.php" class="d-inline">
                                             <input type="hidden" name="id" value="<?php echo $offer['id']; ?>">
                                             <button type="submit" class="btn btn-sm btn-outline-danger" 
                                                     title="Eliminar" onclick="return confirm('¿Eliminar esta oferta?')">
-                                                <i class="fas fa-trash"></i>
+                                                <i class="bi bi-trash3-fill"></i>
                                             </button>
                                         </form>
                                     </div>

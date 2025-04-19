@@ -66,10 +66,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="card-title fw-bold mb-0">Publicar Nueva Oferta de Empleo</h2>
                         <a href="dashboard.php" class="text-decoration-none" style="color: #1a73e8;">
-                            <div class="d-flex align-items-center">
-                                <span class="me-2">Volver al panel</span>
-                                <div class="rounded-circle bg-primary bg-opacity-10" style="width: 28px; height: 28px;"></div>
-                            </div>
+                        <div class="d-flex align-items-center" style="cursor: pointer;">
+                        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" 
+                            style="width: 28px; height: 28px;">
+                            <i class="bi bi-caret-left-fill text-primary" style="font-size: 0.75rem;"></i>
+                        </div>
+                        <span class="me-2">Volver al panel</span>
+
+                </div>
                         </a>
                     </div>
                     

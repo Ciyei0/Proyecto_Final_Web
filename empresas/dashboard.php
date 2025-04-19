@@ -49,19 +49,34 @@ $offers = $stmt->fetchAll();
         <div class="col-lg-4">
             <div class="card border shadow-sm rounded-4 h-100">
                 <div class="card-body p-4">
+
                     <div class="text-center mb-4">
-                        <?php if ($company && $company['logo']): ?>
-                            <div class="avatar-container mb-3 mx-auto" style="width: 150px; height: 150px; overflow: hidden; border-radius: 50%; background-color: #1a73e8;">
-                                <img src="<?php echo BASE_URL . '/assets/uploads/' . htmlspecialchars($company['logo']); ?>" 
-                                     class="img-fluid" alt="Logo de la empresa" style="object-fit: cover; width: 100%; height: 100%;">
-                            </div>
-                        <?php else: ?>
-                            <div class="avatar-placeholder mb-3 mx-auto d-flex align-items-center justify-content-center" 
-                                 style="width: 150px; height: 150px; border-radius: 50%; background-color: #1a73e8;">
-                            </div>
-                        <?php endif; ?>
+                        <?php 
+                       // Ruta corregida para el logo
+                       $logoPath = !empty($company['logo']) 
+                           ? BASE_URL . '/assets/uploads/photos/' . htmlspecialchars($company['logo']) 
+                           : BASE_URL . '/assets/img/default-logo.png';
+                       
+                       // Verificar si el archivo existe realmente
+                       $logoExists = !empty($company['logo']) && 
+                                     file_exists(__DIR__ . '/../assets/uploads/photos/' . $company['logo']);
+                       ?>
+                       
                         
-                        <h3 class="fw-bold"><?php echo htmlspecialchars($company['nombre_empresa'] ?? 'empresa'); ?></h3>
+                        <div class="avatar-container mb-3 mx-auto" style="width: 150px; height: 150px; overflow: hidden; border-radius: 50%; background-color: #f0f0f0;">
+                            <?php if ($logoExists): ?>
+                                <img src="<?php echo $logoPath; ?>" 
+                                     class="img-fluid" alt="Logo de <?php echo htmlspecialchars($company['nombre_empresa'] ?? 'Empresa'); ?>" 
+                                     style="object-fit: cover; width: 100%; height: 100%;"
+                                     onerror="this.src='<?php echo BASE_URL; ?>/assets/img/default-logo.png'">
+                            <?php else: ?>
+                                <div class="d-flex justify-content-center align-items-center h-100">
+                                    <i class="bi bi-building fs-1 text-secondary"></i>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <h3 class="fw-bold"><?php echo htmlspecialchars($company['nombre_empresa'] ?? 'Empresa'); ?></h3>
                         <p class="text-muted"><?php echo htmlspecialchars($user['email']); ?></p>
                     </div>
                     
@@ -89,7 +104,12 @@ $offers = $stmt->fetchAll();
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
-                    
+                                        <!-- Dentro del card-body del sidebar, después de la información de la empresa -->
+                    <div class="mt-4 d-grid gap-2">
+                        <a href="editar.php" class="btn btn-outline-primary rounded-pill py-3">
+                            <i class="bi bi-pencil-square me-2"></i>Editar Información
+                        </a>
+                    </div>
                     <div class="mt-4 d-grid">
                         <a href="publicar.php" class="btn btn-primary rounded-pill py-3" style="background-color: #1a73e8; border: none;">
                             Publicar Nueva Oferta
@@ -107,8 +127,9 @@ $offers = $stmt->fetchAll();
                     <div class="card border shadow-sm rounded-4 h-100">
                         <div class="card-body p-3">
                             <div class="d-flex align-items-center">
-                                <div class="rounded-4 bg-primary bg-opacity-10 me-3" 
-                                     style="width: 50px; height: 50px;">
+                                <div class="rounded-4 bg-primary bg-opacity-10 me-3 d-flex align-items-center justify-content-center" 
+                                    style="width: 50px; height: 50px;">
+                                    <i class="bi bi-building text-primary" style="font-size: 1.5rem;"></i>
                                 </div>
                                 <div>
                                     <h2 class="h2 fw-bold mb-0"><?php echo $stats['total_ofertas'] ?? 0; ?></h2>
@@ -123,8 +144,9 @@ $offers = $stmt->fetchAll();
                     <div class="card border shadow-sm rounded-4 h-100">
                         <div class="card-body p-3">
                             <div class="d-flex align-items-center">
-                                <div class="rounded-4 bg-success bg-opacity-10 me-3" 
-                                     style="width: 50px; height: 50px;">
+                                <div class="rounded-4 bg-success bg-opacity-10 me-3 d-flex align-items-center justify-content-center" 
+                                    style="width: 50px; height: 50px;">
+                                    <i class="bi bi-building-check text-success" style="font-size: 1.5rem;"></i>
                                 </div>
                                 <div>
                                     <h2 class="h2 fw-bold mb-0"><?php echo $stats['ofertas_activas'] ?? 0; ?></h2>
@@ -139,8 +161,9 @@ $offers = $stmt->fetchAll();
                     <div class="card border shadow-sm rounded-4 h-100">
                         <div class="card-body p-3">
                             <div class="d-flex align-items-center">
-                                <div class="rounded-4 bg-secondary bg-opacity-10 me-3" 
-                                     style="width: 50px; height: 50px;">
+                                <div class="rounded-4 bg-secondary bg-opacity-10 me-3 d-flex align-items-center justify-content-center" 
+                                    style="width: 50px; height: 50px;">
+                                    <i class="bi bi-building-exclamation text-secondary" style="font-size: 1.5rem;"></i>
                                 </div>
                                 <div>
                                     <h2 class="h2 fw-bold mb-0"><?php echo $stats['ofertas_inactivas'] ?? 0; ?></h2>
@@ -193,6 +216,9 @@ $offers = $stmt->fetchAll();
                                                 <div class="d-flex align-items-center">
                                                     <div class="rounded-pill bg-info bg-opacity-10 d-flex align-items-center justify-content-center me-2" 
                                                          style="width: 28px; height: 28px;">
+                                                        <i class="bi bi-people-fill text-info"></i>
+                                                        <!-- Dentro del card-body del sidebar, después de la información de la empresa -->
+
                                                     </div>
                                                     <?php echo $offer['aplicaciones']; ?>
                                                 </div>

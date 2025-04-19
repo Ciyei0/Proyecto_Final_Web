@@ -5,9 +5,8 @@ require_once __DIR__ . '/../includes/auth_functions.php';
 if (!isLoggedIn() || !isCandidate()) {
     redirect(BASE_URL . '/auth/login.php');
 }
-
-$pageTitle = "Panel del Candidato";
 require_once __DIR__ . '/../includes/header.php';
+$pageTitle = "Panel del Candidato";
 
 $user = getCurrentUser();
 $candidateId = $user['id'];
@@ -34,40 +33,323 @@ $stmt = $pdo->prepare("
 $stmt->execute([$candidateId]);
 $applications = $stmt->fetchAll();
 ?>
-
-<div class="container mt-5">
+    
+    <style>
+    body {
+        background: #f8f9fa;
+    }
+    
+    .dashboard-container {
+        padding: 40px 0;
+    }
+    
+    .profile-card, .cv-card, .applications-card {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .profile-card:hover, .cv-card:hover, .applications-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #4a89dc, #5e72e4);
+        color: white;
+        padding: 20px;
+        border-bottom: none;
+    }
+    
+    .profile-image-container {
+        width: 150px;
+        height: 150px;
+        position: relative;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        border: 5px solid #fff;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .profile-image-container:hover {
+        transform: scale(1.05);
+        border-color: #4a89dc;
+    }
+    
+    .profile-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .avatar-placeholder {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        border: 5px solid #fff;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .avatar-placeholder:hover {
+        transform: scale(1.05);
+        border-color: #4a89dc;
+    }
+    
+    .user-info {
+        margin-bottom: 25px;
+    }
+    
+    .user-info h4 {
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 5px;
+    }
+    
+    .user-info p {
+        color: #718096;
+        margin-bottom: 15px;
+    }
+    
+    .contact-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        color: #4a5568;
+    }
+    
+    .contact-info i {
+        color: #4a89dc;
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+    }
+    
+    .btn-edit-profile {
+        background: linear-gradient(135deg, #4a89dc, #5e72e4);
+        border: none;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        letter-spacing: 0.5px;
+    }
+    
+    .btn-edit-profile:hover {
+        background: linear-gradient(135deg, #5e72e4, #4a89dc);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(94, 114, 228, 0.4);
+    }
+    
+    .btn-update-cv {
+        background-color: #fff;
+        color: #4a89dc;
+        border: none;
+        border-radius: 5px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-update-cv:hover {
+        background-color: #e6eeff;
+        transform: translateY(-2px);
+    }
+    
+    .section-title {
+        display: flex;
+        align-items: center;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 15px;
+    }
+    
+    .section-title i {
+        color: #4a89dc;
+        margin-right: 10px;
+    }
+    
+    .skill-badge {
+        background: linear-gradient(135deg, #4a89dc, #5e72e4);
+        color: white;
+        border-radius: 20px;
+        padding: 6px 12px;
+        margin: 3px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .skill-badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(94, 114, 228, 0.2);
+    }
+    
+    .btn-view-pdf {
+        background-color: transparent;
+        color: #4a89dc;
+        border: 1px solid #4a89dc;
+        border-radius: 8px;
+        padding: 8px 16px;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+    
+    .btn-view-pdf:hover {
+        background-color: #4a89dc;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(94, 114, 228, 0.2);
+    }
+    
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table thead th {
+        background-color: #f8f9fa;
+        color: #4a5568;
+        font-weight: 600;
+        border-top: none;
+        padding: 12px;
+    }
+    
+    .table td {
+        padding: 12px;
+        vertical-align: middle;
+    }
+    
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .status-pending {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    
+    .status-reviewed {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .status-selected {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+    
+    .status-rejected {
+        background-color: #fee2e2;
+        color: #b91c1c;
+    }
+    
+    .btn-view-offer {
+        border: 1px solid #4a89dc;
+        color: #4a89dc;
+        background-color: transparent;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-view-offer:hover {
+        background-color: #4a89dc;
+        color: white;
+    }
+    
+    .alert {
+        border-radius: 10px;
+        padding: 15px;
+    }
+    
+    .alert-warning {
+        background-color: #fff7ed;
+        border-left: 4px solid #f59e0b;
+        color: #b45309;
+    }
+    
+    .alert-info {
+        background-color: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        color: #1e40af;
+    }
+    
+    .alert a {
+        color: inherit;
+        font-weight: 600;
+        text-decoration: underline;
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Mejoras para responsividad */
+    @media (max-width: 992px) {
+        .dashboard-container {
+            padding: 20px 0;
+        }
+        
+        .profile-card, .cv-card, .applications-card {
+            margin-bottom: 20px;
+        }
+    }
+</style>
+<div class="container dashboard-container">
     <div class="row">
         <!-- Perfil del candidato -->
         <div class="col-lg-4">
-            <div class="card shadow-lg border-0 mb-4 transition-all card-hover">
-                <div class="text-white text-center py-4" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);">
+            <div class="card profile-card fade-in mb-4">
+                <div class="card-header text-center">
                     <h5 class="mb-0">Mi Perfil</h5>
                 </div>
                 <div class="card-body text-center">
                     <div class="mb-4">
                         <?php if ($candidate && $candidate['foto_perfil']): ?>
-                            <div class="rounded-circle overflow-hidden border border-4 border-white shadow-lg mx-auto" style="width: 150px; height: 150px;">
-                                <img src="<?php echo BASE_URL . '/assets/photos/' . htmlspecialchars($candidate['foto_perfil']); ?>" 
-                                     class="img-fluid w-100 h-100" style="object-fit: cover;">
+                            <div class="profile-image-container">
+                                <img src="<?php echo BASE_URL . '/assets/uploads/photos/' . htmlspecialchars($candidate['foto_perfil']); ?>" 
+                                class="profile-image">
                             </div>
                         <?php else: ?>
-                            <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center mx-auto shadow-lg" 
-                                 style="width: 150px; height: 150px; background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);">
+                            <div class="avatar-placeholder">
                                 <i class="fas fa-user fa-3x text-secondary"></i>
                             </div>
                         <?php endif; ?>
                     </div>
                     
-                    <h4 class="fw-bold text-gray-800"><?php echo htmlspecialchars($user['nombre']); ?></h4>
-                    <p class="text-muted"><?php echo htmlspecialchars($user['email']); ?></p>
+                    <div class="user-info">
+                        <h4><?php echo htmlspecialchars($user['nombre']); ?></h4>
+                        <p><?php echo htmlspecialchars($user['email']); ?></p>
+                    </div>
                     
                     <?php if ($candidate): ?>
-                        <div class="d-flex align-items-center justify-content-center mb-2">
-                            <i class="fas fa-phone text-primary me-2"></i>
+                        <div class="contact-info">
+                            <i class="fas fa-phone"></i>
                             <span><?php echo htmlspecialchars($candidate['telefono'] ?? 'No especificado'); ?></span>
                         </div>
-                        <div class="d-flex align-items-center justify-content-center">
-                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                        <div class="contact-info">
+                            <i class="fas fa-map-marker-alt"></i>
                             <span>
                                 <?php 
                                 $location = [];
@@ -79,7 +361,7 @@ $applications = $stmt->fetchAll();
                         </div>
                     <?php endif; ?>
                     
-                    <a href="perfil.php" class="btn btn-primary btn-sm mt-4 w-100">
+                    <a href="perfil.php" class="btn btn-edit-profile mt-4 w-100">
                         <i class="fas fa-user-edit me-2"></i> Editar Perfil
                     </a>
                 </div>
@@ -89,34 +371,39 @@ $applications = $stmt->fetchAll();
         <!-- CV y postulaciones -->
         <div class="col-lg-8">
             <!-- CV -->
-            <div class="card shadow-lg border-0 mb-4 transition-all card-hover">
-                <div class="gradient-bg text-white d-flex justify-content-between align-items-center px-4 py-3" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);">
+            <div class="card cv-card fade-in mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Mi CV</h5>
-                    <a href="perfil.php" class="btn btn-sm btn-light">
+                    <a href="perfil.php" class="btn btn-update-cv">
                         <i class="fas fa-sync-alt me-1"></i> <?php echo $cv ? 'Actualizar CV' : 'Crear CV'; ?>
                     </a>
                 </div>
                 <div class="card-body">
                     <?php if ($cv): ?>
-                        <h6 class="fw-bold text-gray-800 mb-2">
-                            <i class="fas fa-bullseye text-primary me-2"></i> Objetivo Profesional
+                        <h6 class="section-title">
+                            <i class="fas fa-bullseye"></i> Objetivo Profesional
                         </h6>
                         <p class="text-gray-600"><?php echo $cv['objetivo_profesional'] ? nl2br(htmlspecialchars($cv['objetivo_profesional'])) : 'No especificado'; ?></p>
                         
-                        <h6 class="fw-bold text-gray-800 mt-4 mb-2">
-                            <i class="fas fa-tools text-primary me-2"></i> Habilidades Clave
+                        <h6 class="section-title mt-4">
+                            <i class="fas fa-tools"></i> Habilidades Clave
                         </h6>
                         <div class="d-flex flex-wrap gap-2">
                             <?php 
                             $skills = explode(',', $cv['habilidades_clave'] ?? '');
-                            foreach ($skills as $skill): ?>
-                                <span class="badge bg-primary text-white px-3 py-1"><?php echo htmlspecialchars(trim($skill)); ?></span>
-                            <?php endforeach; ?>
+                            foreach ($skills as $skill): 
+                                if(trim($skill) !== ""):
+                            ?>
+                                <span class="skill-badge"><?php echo htmlspecialchars(trim($skill)); ?></span>
+                            <?php 
+                                endif;
+                            endforeach; 
+                            ?>
                         </div>
                         
                         <?php if ($cv['cv_pdf']): ?>
                             <a href="<?php echo BASE_URL . '/assets/cv/' . htmlspecialchars($cv['cv_pdf']); ?>" 
-                               target="_blank" class="btn btn-outline-primary mt-4">
+                               target="_blank" class="btn btn-view-pdf mt-4">
                                 <i class="fas fa-file-pdf me-2"></i> Ver CV en PDF
                             </a>
                         <?php endif; ?>
@@ -129,15 +416,15 @@ $applications = $stmt->fetchAll();
             </div>
             
             <!-- Postulaciones -->
-            <div class="card shadow-lg border-0 transition-all card-hover">
-                <div class="gradient-bg text-white px-4 py-3" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);">
-                    <h5 class="mb-0" >Mis Postulaciones</h5>
+            <div class="card applications-card fade-in">
+                <div class="card-header">
+                    <h5 class="mb-0">Mis Postulaciones</h5>
                 </div>
                 <div class="card-body">
                     <?php if ($applications): ?>
                         <div class="table-responsive">
                             <table class="table table-hover">
-                                <thead class="table-light">
+                                <thead>
                                     <tr>
                                         <th>Oferta</th>
                                         <th>Empresa</th>
@@ -153,16 +440,16 @@ $applications = $stmt->fetchAll();
                                             <td><?php echo htmlspecialchars($app['nombre_empresa']); ?></td>
                                             <td><?php echo date('d/m/Y', strtotime($app['fecha_aplicacion'])); ?></td>
                                             <td>
-                                                <span class="badge 
-                                                    <?php echo $app['estado'] == 'pendiente' ? 'bg-warning' : 
-                                                          ($app['estado'] == 'revisado' ? 'bg-info' : 
-                                                          ($app['estado'] == 'seleccionado' ? 'bg-success' : 'bg-danger')); ?>">
+                                                <span class="status-badge 
+                                                    <?php echo $app['estado'] == 'pendiente' ? 'status-pending' : 
+                                                          ($app['estado'] == 'revisado' ? 'status-reviewed' : 
+                                                          ($app['estado'] == 'seleccionado' ? 'status-selected' : 'status-rejected')); ?>">
                                                     <?php echo ucfirst($app['estado']); ?>
                                                 </span>
                                             </td>
                                             <td>
                                                 <a href="<?php echo BASE_URL; ?>/ofertas/ver.php?id=<?php echo $app['oferta_id']; ?>" 
-                                                   class="btn btn-sm btn-outline-primary">
+                                                   class="btn btn-view-offer">
                                                     Ver Oferta
                                                 </a>
                                             </td>

@@ -22,24 +22,39 @@ function registerUser($nombre, $email, $password, $tipo) {
     return $pdo->lastInsertId();
 }
 
-// Función para registrar un candidato
-function registerCandidate($usuarioId, $telefono, $direccion, $ciudad, $provincia) {
+// Función para registrar un candidato (actualizada)
+function registerCandidate($usuarioId, $telefono, $direccion, $ciudad, $provincia, $fotoPerfil = null) {
     global $pdo;
     
-    $stmt = $pdo->prepare("INSERT INTO candidatos (usuario_id, telefono, direccion, ciudad, provincia) 
-                          VALUES (?, ?, ?, ?, ?)");
-    return $stmt->execute([$usuarioId, $telefono, $direccion, $ciudad, $provincia]);
+    $stmt = $pdo->prepare("INSERT INTO candidatos (usuario_id, telefono, direccion, ciudad, provincia, foto_perfil) 
+                          VALUES (?, ?, ?, ?, ?, ?)");
+    return $stmt->execute([$usuarioId, $telefono, $direccion, $ciudad, $provincia, $fotoPerfil]);
+}
+
+// Función para actualizar la foto de perfil de un usuario
+function updateUserPhoto($userId, $fotoPerfil) {
+    global $pdo;
+    
+    // Actualizar en candidatos si es candidato
+    $stmt = $pdo->prepare("UPDATE candidatos SET foto_perfil = ? WHERE usuario_id = ?");
+    return $stmt->execute([$fotoPerfil, $userId]);
 }
 
 // Función para registrar una empresa
-function registerCompany($usuarioId, $nombreEmpresa, $descripcion, $direccion, $telefono, $sitioWeb) {
+function registerCompany($usuarioId, $nombreEmpresa, $descripcion, $direccion, $telefono, $sitioWeb, $logo)  {
     global $pdo;
     
-    $stmt = $pdo->prepare("INSERT INTO empresas (usuario_id, nombre_empresa, descripcion, direccion, telefono, sitio_web) 
-                          VALUES (?, ?, ?, ?, ?, ?)");
-    return $stmt->execute([$usuarioId, $nombreEmpresa, $descripcion, $direccion, $telefono, $sitioWeb]);
+    $stmt = $pdo->prepare("INSERT INTO empresas (usuario_id, nombre_empresa, descripcion, direccion, telefono, sitio_web, logo) 
+                          VALUES (?, ?, ?, ?, ?, ?, ?)");
+    return $stmt->execute([$usuarioId, $nombreEmpresa, $descripcion, $direccion, $telefono, $sitioWeb, $logo]);
 }
 
+function updateCompanyLogo($userId, $logo) {
+    global $pdo;
+    
+    $stmt = $pdo->prepare("UPDATE empresas SET logo = ? WHERE usuario_id = ?");
+    return $stmt->execute([$logo, $userId]);
+}
 // Función para login
 function login($email, $password) {
     global $pdo;
