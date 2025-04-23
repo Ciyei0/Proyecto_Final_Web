@@ -81,12 +81,8 @@ $applications = $stmt->fetchAll();
                                             Ver perfil completo
                                         </a>
                                     </li>
-                                    <li>
-                                        <a class="dropdown-item" href="<?php echo BASE_URL; ?>/assets/cv/<?php echo htmlspecialchars($app['cv_pdf'] ?? ''); ?>" 
-                                           target="_blank" <?php echo !$app['cv_pdf'] ? 'disabled' : ''; ?>>
-                                            Ver CV en PDF
-                                        </a>
-                                    </li>
+
+                                    
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form method="post" action="cambiar_estado.php" class="d-inline">
@@ -104,6 +100,9 @@ $applications = $stmt->fetchAll();
                                     </li>
                                 </ul>
                             </div>
+
+
+                            
                         </div>
                         <?php if ($app['estado'] != 'pendiente'): ?>
                             <div class="mt-2">
