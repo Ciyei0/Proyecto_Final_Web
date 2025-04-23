@@ -13,58 +13,17 @@
                             <a href="#" class="btn btn-sm btn-outline-light rounded-circle" title="LinkedIn">
                                 <i class="bi bi-linkedin"></i>
                             </a>
-                            <a href="#" class="btn btn-sm btn-outline-light rounded-circle" title="Twitter">
-                                <i class="bi bi-twitter-x"></i>
-                            </a>
+ 
                             <a href="#" class="btn btn-sm btn-outline-light rounded-circle" title="Instagram">
                                 <i class="bi bi-instagram"></i>
                             </a>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-6">
-                        <h5 class="text-white mb-3">Enlaces Rápidos</h5>
-                        <ul class="list-unstyled footer-links">
-                            <li class="mb-2">
-                                <a href="<?php echo BASE_URL; ?>/ofertas/" class="text-white-50 text-decoration-none d-flex align-items-center">
-                                    <i class="bi bi-chevron-right me-2 small"></i>Ofertas de trabajo
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="#" class="text-white-50 text-decoration-none d-flex align-items-center">
-                                    <i class="bi bi-chevron-right me-2 small"></i>Empresas destacadas
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="#" class="text-white-50 text-decoration-none d-flex align-items-center">
-                                    <i class="bi bi-chevron-right me-2 small"></i>Blog de carrera
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-white-50 text-decoration-none d-flex align-items-center">
-                                    <i class="bi bi-chevron-right me-2 small"></i>Preguntas frecuentes
-                                </a>
-                            </li>
-                        </ul>
+   
                     </div>
                     <div class="col-lg-2 col-md-6">
-                        <h5 class="text-white mb-3">Legal</h5>
-                        <ul class="list-unstyled footer-links">
-                            <li class="mb-2">
-                                <a href="#" class="text-white-50 text-decoration-none d-flex align-items-center">
-                                    <i class="bi bi-chevron-right me-2 small"></i>Términos y condiciones
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="#" class="text-white-50 text-decoration-none d-flex align-items-center">
-                                    <i class="bi bi-chevron-right me-2 small"></i>Política de privacidad
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-white-50 text-decoration-none d-flex align-items-center">
-                                    <i class="bi bi-chevron-right me-2 small"></i>Aviso legal
-                                </a>
-                            </li>
-                        </ul>
+
                     </div>
                     <div class="col-lg-3 col-md-6">
                         <h5 class="text-white mb-3">Contacto</h5>
@@ -81,11 +40,8 @@
                                 <i class="bi bi-telephone-fill text-warning me-2 mt-1"></i>
                                 <a href="tel:+123456789" class="text-white-50 text-decoration-none">+123 456 789</a>
                             </li>
-                            <li class="mt-3">
-                                <a href="#" class="btn btn-sm btn-warning fw-semibold">
-                                    <i class="bi bi-headset me-1"></i> Soporte técnico
-                                </a>
-                            </li>
+    
+                            
                         </ul>
                     </div>
                 </div>
@@ -97,27 +53,7 @@
                     <div class="col-md-6 text-center text-md-start">
                         <p class="text-white-50 mb-0">&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. Todos los derechos reservados.</p>
                     </div>
-                    <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
-                        <ul class="list-inline mb-0">
-                            <li class="list-inline-item">
-                                <a href="#" class="text-white-50 text-decoration-none small">Mapa del sitio</a>
-                            </li>
-                            <li class="list-inline-item">
-                                <span class="text-white-50 mx-2">|</span>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="#" class="text-white-50 text-decoration-none small">Cookies</a>
-                            </li>
-                            <li class="list-inline-item">
-                                <span class="text-white-50 mx-2">|</span>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="#" class="text-white-50 text-decoration-none small">Accesibilidad</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </footer>
 
